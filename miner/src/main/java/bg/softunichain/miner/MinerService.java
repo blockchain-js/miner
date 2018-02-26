@@ -1,6 +1,7 @@
 package bg.softunichain.miner;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -8,9 +9,12 @@ import java.time.Instant;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpStatus;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
@@ -45,7 +49,7 @@ public class MinerService {
 		try {
 			CloseableHttpResponse response = httpclient.execute(httpGet);
 
-			if (response.getStatusLine().getStatusCode() == 200) {
+			if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
 				HttpEntity entity = response.getEntity();
 				String responseBody = EntityUtils.toString(entity, "UTF-8");
 				System.out.println(responseBody);
@@ -61,6 +65,44 @@ public class MinerService {
 		} 
 
 		return nextBlock;
+	}
+	
+	public void submitNextBlock(SubmitBlock block) throws IOException {
+
+		String url = BASE_URL + POST_SUBPATH + this.miner.getAddress();
+		Gson gson = new Gson();		
+		String responsBody = gson.toJson(block);
+		
+		 CloseableHttpClient client = HttpClients.createDefault();
+		 HttpPost httpPost = new HttpPost(url);
+		 StringEntity entity;
+		try {
+			entity = new StringEntity(responsBody);
+			httpPost.setEntity(entity);
+			httpPost.setHeader("Accept", "application/json");
+		    httpPost.setHeader("Content-type", "application/json");
+		    CloseableHttpResponse response = client.execute(httpPost);
+		    
+		    if(response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+		    	System.out.println("New Block submited.");
+		    } else {
+		    	System.out.println("New Block not submited.");
+		    }
+		    
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClientProtocolException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			client.close();
+		}
+		
+		
 	}
 	
 	
