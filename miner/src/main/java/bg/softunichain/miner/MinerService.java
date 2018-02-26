@@ -123,6 +123,6 @@ public class MinerService {
 	}
 	
 	private boolean isValidHash(String hash, int difficulty) {			
-		return hash.substring(0, difficulty) == StringUtils.repeat("0", difficulty) ? true : false;
+		return hash.substring(0, difficulty).equals(StringUtils.repeat("0", difficulty)) ? true : false;
 	}
 }
