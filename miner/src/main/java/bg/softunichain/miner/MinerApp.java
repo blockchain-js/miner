@@ -1,6 +1,7 @@
 package bg.softunichain.miner;
 
 import bg.softunichain.miner.models.RequestBlock;
+import bg.softunichain.miner.models.SubmitBlock;
 
 public class MinerApp 
 {
@@ -9,9 +10,25 @@ public class MinerApp
 	
     public static void main( String[] args )
     {
-    	MinerService ms = new MinerService(DEFAULT_NODE_BASEURL, DEFAULT_MINER_ADDRESS);
-
-		RequestBlock nextBlock = ms.getNextBlock();
-		ms.mineBlockHash(nextBlock);
+    	
+    	String url = (args != null && args.length > 0) ? args[0] : DEFAULT_NODE_BASEURL;
+    	String minerAddress = (args != null && args.length > 1) ? args[1] : DEFAULT_MINER_ADDRESS;
+    		
+    	
+    	
+    	MinerService ms = new MinerService(url, minerAddress);
+		RequestBlock nextBlock;
+		SubmitBlock sb;
+	
+		int count = 0;
+		
+		while (count < 10) {
+			
+			nextBlock = ms.getNextBlock();
+			sb = ms.mineBlockHash(nextBlock);
+			System.out.println(sb.getBlockHash());
+			
+			count++;
+		}
     }
 }
