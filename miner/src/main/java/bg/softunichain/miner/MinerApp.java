@@ -1,10 +1,6 @@
 package bg.softunichain.miner;
 
-/**
- * Hello world!
- *
- */
-public class App 
+public class MinerApp 
 {
     public static void main( String[] args )
     {
