@@ -22,16 +22,17 @@ public class MinerApp
 		RequestBlock nextBlock;
 		SubmitBlock sb;
 	
-		int count = 0;
+		//int count = 0;
 		
-		while (count < 10) {
+//		while (count < 10) {
+		while (true) {
 			
 			nextBlock = ms.getNextBlock();
 			sb = ms.mineBlockHash(nextBlock);
 			ms.submitNextBlock(sb);
 			System.out.println(sb.getBlockHash());
 			
-			count++;
+//			count++;
 		}
     }
 }
